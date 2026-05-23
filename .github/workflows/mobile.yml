@@ -110,6 +110,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true   # ← add this
+
       - uses: dtolnay/rust-toolchain@stable
 
       - name: Add iOS target
