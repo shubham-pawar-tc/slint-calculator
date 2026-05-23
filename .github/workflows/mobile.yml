@@ -74,15 +74,13 @@ jobs:
           echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
           echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
 
-      - name: Install Android SDK (cmdline tools + platform 30)
+      - name: Install Android SDK
         run: |
           mkdir -p $HOME/android-sdk/cmdline-tools
           cd $HOME/android-sdk
-
           curl -o sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
           unzip sdk.zip -d cmdline-tools
           mv cmdline-tools/cmdline-tools cmdline-tools/latest
-
           yes | cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk \
             "platform-tools" \
             "platforms;android-30" \
@@ -97,8 +95,8 @@ jobs:
       - name: Install cargo-apk
         run: cargo install cargo-apk
 
-      - name: Build APK
-        run: cargo apk build --release
+      - name: Build APK (debug)          # ← debug, no keystore needed
+        run: cargo apk build
 
       - uses: actions/upload-artifact@v4
         with:
