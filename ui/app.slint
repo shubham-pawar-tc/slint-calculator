@@ -1,0 +1,169 @@
+component CalcButton inherits Rectangle {
+    min-width: 60px;
+    min-height: 52px;
+    border-radius: 14px;
+    drop-shadow-color: #00000066;
+    drop-shadow-blur: 6px;
+    drop-shadow-offset-y: 3px;
+
+    in property <string> value;
+    in property <brush> btn-color: #0f3460;
+    callback pressed();
+
+    background: root.btn-color;
+
+    states [
+        pressed when touch.pressed: {
+            background: root.btn-color.darker(30%);
+            drop-shadow-blur: 1px;
+            drop-shadow-offset-y: 1px;
+        }
+    ]
+
+    animate background { duration: 80ms; }
+
+    Text {
+        text: root.value;
+        color: #eaeaea;
+        font-size: 24px;
+        font-weight: 600;
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+
+    touch := TouchArea {
+        clicked => { root.pressed(); }
+    }
+}
+
+component WideButton inherits Rectangle {
+    min-height: 48px;
+    border-radius: 14px;
+    drop-shadow-color: #00000066;
+    drop-shadow-blur: 6px;
+    drop-shadow-offset-y: 3px;
+
+    in property <string> label;
+    in property <brush> btn-color: #533483;
+    callback pressed();
+
+    background: root.btn-color;
+
+    states [
+        pressed when touch.pressed: {
+            background: root.btn-color.darker(30%);
+        }
+    ]
+
+    animate background { duration: 80ms; }
+
+    Text {
+        text: root.label;
+        color: #eaeaea;
+        font-size: 20px;
+        font-weight: 700;
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+
+    touch := TouchArea {
+        clicked => { root.pressed(); }
+    }
+}
+
+export component AppWindow inherits Window {
+    title: "Calculator";
+    min-width: 300px;
+    min-height: 480px;
+    background: #1a1a2e;
+
+    in-out property <string> display_text;
+
+    callback add_number(string);
+    callback clear();
+    callback calculate();
+
+    VerticalLayout {
+        padding: 20px;
+        spacing: 14px;
+
+        // ── Display ──────────────────────────────────────────────────
+        Rectangle {
+            vertical-stretch: 1;
+            min-height: 80px;
+            border-radius: 18px;
+            background: #0d0d1a;
+            drop-shadow-color: #00000088;
+            drop-shadow-blur: 12px;
+            drop-shadow-offset-y: 4px;
+
+            VerticalLayout {
+                alignment: end;
+                padding-right: 20px;
+                padding-bottom: 14px;
+                padding-left: 20px;
+
+                Text {
+                    text: root.display-text == "" ? "0" : root.display-text;
+                    color: #eaeaea;
+                    font-size: 52px;
+                    font-weight: 200;
+                    horizontal-alignment: right;
+                    overflow: elide;
+                }
+            }
+        }
+
+        // ── Button grid ──────────────────────────────────────────────
+        GridLayout {
+            vertical-stretch: 4;
+            spacing: 10px;
+
+            Row {
+                CalcButton { col: 0; value: "7"; vertical-stretch: 1; pressed => root.add_number("7"); }
+                CalcButton { col: 1; value: "8"; vertical-stretch: 1; pressed => root.add_number("8"); }
+                CalcButton { col: 2; value: "9"; vertical-stretch: 1; pressed => root.add_number("9"); }
+                CalcButton { col: 3; value: "÷"; vertical-stretch: 1; btn-color: #e94560; pressed => root.add_number("/"); }
+            }
+            Row {
+                CalcButton { col: 0; value: "4"; vertical-stretch: 1; pressed => root.add_number("4"); }
+                CalcButton { col: 1; value: "5"; vertical-stretch: 1; pressed => root.add_number("5"); }
+                CalcButton { col: 2; value: "6"; vertical-stretch: 1; pressed => root.add_number("6"); }
+                CalcButton { col: 3; value: "×"; vertical-stretch: 1; btn-color: #e94560; pressed => root.add_number("*"); }
+            }
+            Row {
+                CalcButton { col: 0; value: "1"; vertical-stretch: 1; pressed => root.add_number("1"); }
+                CalcButton { col: 1; value: "2"; vertical-stretch: 1; pressed => root.add_number("2"); }
+                CalcButton { col: 2; value: "3"; vertical-stretch: 1; pressed => root.add_number("3"); }
+                CalcButton { col: 3; value: "−"; vertical-stretch: 1; btn-color: #e94560; pressed => root.add_number("-"); }
+            }
+            Row {
+                CalcButton { col: 0; value: "."; vertical-stretch: 1; btn-color: #1a3a6e; pressed => root.add_number("."); }
+                CalcButton { col: 1; value: "0"; vertical-stretch: 1; pressed => root.add_number("0"); }
+                CalcButton { col: 2; value: "="; vertical-stretch: 1; btn-color: #e94560; pressed => root.calculate(); }
+                CalcButton { col: 3; value: "+"; vertical-stretch: 1; btn-color: #e94560; pressed => root.add_number("+"); }
+            }
+        }
+
+        // ── Bottom row ───────────────────────────────────────────────
+        HorizontalLayout {
+            vertical-stretch: 1;
+            spacing: 10px;
+            min-height: 48px;
+
+            WideButton {
+                horizontal-stretch: 1;
+                label: "⌫";
+                btn-color: #1a3a6e;
+                pressed => { root.add_number("⌫"); }
+            }
+
+            WideButton {
+                horizontal-stretch: 3;
+                label: "AC  Clear";
+                btn-color: #533483;
+                pressed => { root.clear(); }
+            }
+        }
+    }
+}
