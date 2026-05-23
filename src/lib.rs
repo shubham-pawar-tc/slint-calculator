@@ -81,3 +81,12 @@ extern "C" fn android_main(app: i_slint_backend_android_activity::android_activi
     slint::android::init(app).unwrap();
     run_app();  // ✅ now visible because run_app is defined above in same file
 }
+
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::prelude::*;
+
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen(start)]
+pub fn wasm_main() {
+    run_app();
+}

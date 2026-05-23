@@ -17,6 +17,10 @@ slint = "1.16"
 slint = { version = "1.16", default-features = false, features = ["backend-android-activity-06", "renderer-femtovg"] }
 i-slint-backend-android-activity = { version = "1.16", features = ["native-activity"] }
 
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+slint = { version = "1.16", default-features = false, features = ["backend-winit-wasm", "renderer-femtovg"] }
+wasm-bindgen = "0.2"
+
 [build-dependencies]
 slint-build = "1.16"
 
