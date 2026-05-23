@@ -3,22 +3,16 @@ slint::include_modules!();
 use std::cell::RefCell;
 use std::rc::Rc;
 
-fn main() {
+fn run_app() {
     let ui = AppWindow::new().unwrap();
-
     let expression = Rc::new(RefCell::new(String::new()));
 
     {
         let expression = expression.clone();
         let ui_handle = ui.as_weak();
-
         ui.on_add_number(move |value| {
             let mut expr = expression.borrow_mut();
-            if value == "⌫" {
-                expr.pop();
-            } else {
-                expr.push_str(&value);
-            }
+            if value == "⌫" { expr.pop(); } else { expr.push_str(&value); }
             if let Some(ui) = ui_handle.upgrade() {
                 ui.set_display_text(expr.clone().into());
             }
@@ -28,7 +22,6 @@ fn main() {
     {
         let expression = expression.clone();
         let ui_handle = ui.as_weak();
-
         ui.on_clear(move || {
             expression.borrow_mut().clear();
             if let Some(ui) = ui_handle.upgrade() {
@@ -40,7 +33,6 @@ fn main() {
     {
         let expression = expression.clone();
         let ui_handle = ui.as_weak();
-
         ui.on_calculate(move || {
             let expr = expression.borrow().clone();
             let result = simple_eval(&expr);
@@ -56,26 +48,19 @@ fn main() {
 
 fn simple_eval(expr: &str) -> String {
     let expr = expr.trim();
-
     for op in ['+', '-', '*', '/'] {
         if let Some(pos) = expr.rfind(op) {
             if pos == 0 { continue; }
-
             let left = expr[..pos].trim();
             let right = expr[pos + op.len_utf8()..].trim();
-
             if let (Ok(a), Ok(b)) = (left.parse::<f64>(), right.parse::<f64>()) {
                 let result = match op {
                     '+' => a + b,
                     '-' => a - b,
                     '*' => a * b,
-                    '/' => {
-                        if b == 0.0 { return "Div/0".to_string(); }
-                        a / b
-                    }
+                    '/' => { if b == 0.0 { return "Div/0".to_string(); } a / b }
                     _ => return "Error".to_string(),
                 };
-
                 if result.fract() == 0.0 && result.abs() < 1e12 {
                     return (result as i64).to_string();
                 } else {
@@ -87,6 +72,12 @@ fn simple_eval(expr: &str) -> String {
             }
         }
     }
-
     "Error".to_string()
+}
+
+#[cfg(target_os = "android")]
+#[no_mangle]
+extern "C" fn android_main(app: slint::android::AndroidApp) {
+    slint::android::init(app).unwrap();
+    run_app();
 }
