@@ -96,12 +96,12 @@ jobs:
         run: cargo install cargo-apk
 
       - name: Build APK (debug)
-        run: cargo apk build --lib        # ← fixed: targets cdylib, ignores [[bin]]
+        run: cargo apk build --lib
 
       - uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: target/android-artifacts/**/*.apk
+          path: target/debug/apk/*.apk    # ← fixed path
 
 
   ios:
