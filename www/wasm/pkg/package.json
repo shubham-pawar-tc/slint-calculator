@@ -1,0 +1,15 @@
+{
+  "name": "slint_calculator",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "slint_calculator_bg.wasm",
+    "slint_calculator.js",
+    "slint_calculator.d.ts"
+  ],
+  "main": "slint_calculator.js",
+  "types": "slint_calculator.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
