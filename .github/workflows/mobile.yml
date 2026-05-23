@@ -95,8 +95,8 @@ jobs:
       - name: Install cargo-apk
         run: cargo install cargo-apk
 
-      - name: Build APK (debug)          # ← debug, no keystore needed
-        run: cargo apk build
+      - name: Build APK (debug)
+        run: cargo apk build --lib        # ← fixed: targets cdylib, ignores [[bin]]
 
       - uses: actions/upload-artifact@v4
         with:
@@ -109,7 +109,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: true   # ← add this
+          persist-credentials: true
 
       - uses: dtolnay/rust-toolchain@stable
 
