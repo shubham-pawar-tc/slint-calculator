@@ -95,13 +95,21 @@ jobs:
       - name: Install cargo-apk
         run: cargo install cargo-apk
 
-      - name: Build APK (debug)
-        run: cargo apk build --lib
+      - name: Generate keystore for signing
+        run: |
+          keytool -genkey -v -keystore debug.keystore \
+            -alias androiddebugkey \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass android -keypass android \
+            -dname "CN=Android Debug, O=Android, C=US"
+
+      - name: Build APK (release)
+        run: cargo apk build --lib --release
 
       - uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: target/debug/apk/*.apk    # ← fixed path
+          path: target/release/apk/*.apk
 
 
   ios:

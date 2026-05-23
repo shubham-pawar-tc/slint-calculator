@@ -3,11 +3,18 @@ name = "slint_calculator"
 version = "0.1.0"
 edition = "2021"
 
+[profile.release]
+opt-level = "z"
+lto = true
+strip = true
+codegen-units = 1
+panic = "abort"
+
 [dependencies]
 slint = "1.16"
 
 [target.'cfg(target_os = "android")'.dependencies]
-slint = { version = "1.16", features = ["backend-android-activity-06"] }
+slint = { version = "1.16", default-features = false, features = ["backend-android-activity-06", "renderer-femtovg"] }
 i-slint-backend-android-activity = { version = "1.16", features = ["native-activity"] }
 
 [build-dependencies]
@@ -29,3 +36,7 @@ build_targets = ["aarch64-linux-android"]
 [package.metadata.android.sdk]
 min_sdk_version = 23
 target_sdk_version = 30
+
+[package.metadata.android.signing.release]
+path = "debug.keystore"
+keystore_password = "android"
