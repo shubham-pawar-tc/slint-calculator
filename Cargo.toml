@@ -6,6 +6,10 @@ edition = "2021"
 [dependencies]
 slint = "1.16"
 
+[target.'cfg(target_os = "android")'.dependencies]
+slint = { version = "1.16", features = ["backend-android-activity-06"] }
+i-slint-backend-android-activity = { version = "1.16", features = ["native-activity"] }
+
 [build-dependencies]
 slint-build = "1.16"
 
